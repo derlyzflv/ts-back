@@ -1,13 +1,42 @@
 import readline from 'readline/promises';
 import { stdin as input, stdout as output } from 'process';
 
-let tareas : string[] = ["Diseñar wireframe", "Crear componentes"];
+let idGlobal = 1;
 
+interface Task{
+    id: number;
+    title: string;
+    completed: boolean;
+}
+
+const addTask = (tareaTexto:string) => {
+    const tarea: Task = {
+        id: idGlobal++,
+        title: tareaTexto,
+        completed: false,
+    }
+    tareas.push(tarea);
+    console.log(`Tarea agregada: ${tarea.title}`);
+
+};
+
+const listTasks = () => {
+    for (let i = 0; i < tareas.length; i++) {
+        console.log("[", tareas[i].id, "]", tareas[i].title, " - ", tareas[i].completed ? "completed" : "pending");
+    }
+}
+
+const removeTask = () => {
+    const tareaEliminada = tareas.pop()!;
+    console.log("Tarea eliminada: ", tareaEliminada.title);
+}
+
+
+const tareas : Task[] = [];
 let opcionTexto : string;
 let tareaTexto : string;
-let tareaEliminada : string;
 let opcion: number;
-let i:number;
+
 do
 {
     console.log('======================');
@@ -28,21 +57,17 @@ do
         case 1:
             // Agregar tarea: lee el título que ingresa el usuario y agrégalo al arreglo con .push()
             tareaTexto = await rl.question("Escribe la tarea: ");
-            tareas.push(tareaTexto);
-            console.log(`Tarea agregada: ${tareaTexto}`);
+            addTask(tareaTexto);
             break;
             
         case 2:
             //Eliminar última tarea: elimina el último elemento del arreglo con .pop() e imprime el título eliminado
-            tareaEliminada = tareas.pop()!;
-            console.log(`Tarea eliminada: ${tareaEliminada}`);
+            removeTask();
             break;
         
         case 3:
             // Listar tareas: usa un ciclo for para recorrer el arreglo e imprimir cada título con su número de posición
-            for(i = 0; i<tareas.length; i++){
-                console.log(`Tarea: ${tareas[i]}  / Posicion: ${i}`);
-            }
+            listTasks();
             break;
         
         case 4:
@@ -56,3 +81,6 @@ do
     rl.close();
 }
 while ( opcion != 4)
+
+
+
