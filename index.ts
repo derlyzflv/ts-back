@@ -21,9 +21,10 @@ const addTask = (tareaTexto:string) => {
 };
 
 const listTasks = () => {
-    for (let i = 0; i < tareas.length; i++) {
-        console.log("[", tareas[i].id, "]", tareas[i].title, " - ", tareas[i].completed ? "completed" : "pending");
-    }
+    // for (let i = 0; i < tareas.length; i++) {
+    //     console.log("[", tareas[i].id, "]", tareas[i].title, " - ", tareas[i].completed ? "completed" : "pending");
+    // }
+    imprimirTareas(tareas);
 }
 
 const removeTask = () => {
@@ -31,8 +32,39 @@ const removeTask = () => {
     console.log("Tarea eliminada: ", tareaEliminada.title);
 }
 
+const completarTarea = (id:number) => {
+    const tareaCompletada : Task | undefined = tareas.find((t:Task) => t.id === id) ;
+    if (tareaCompletada !== undefined) {
+        tareas[id].completed = true;
+        console.log(tareas[id-1]);
+    } else {
+        console.log("ERROR: Tarea no encontrada");
+    }
+}
+
+const listaPendientes = () => {
+    const tareasPendientes : Task[] = tareas.filter((t:Task) => t.completed === false);
+    console.log(tareasPendientes);
+}
+const listaCompletados = () => {
+    const tareasCompletadas : Task[] = tareas.filter((t:Task) => t.completed === true);
+    console.log(tareasCompletadas);
+}
+
+const imprimirTareas = (tareas : Task[]) => {
+    const tareasEnTexto : string[] = tareas.map(({id, title, completed} : Task)=>{
+        // guardar en cada indice una cadena de texto
+        return `[${completed ? 'Completed' : 'No Completed'}] ID: ${id} - ${title}`;
+    });
+    tareasEnTexto.forEach(element => {
+        console.log(element);
+    });
+}
 
 const tareas : Task[] = [];
+addTask("Requisitos Funcionales")
+addTask("Prototipo Home")
+addTask("Interfaz Home")
 let opcionTexto : string;
 let tareaTexto : string;
 let opcion: number;
@@ -46,7 +78,10 @@ do
     console.log('1. Agregar tarea');
     console.log('2. Eliminar última tarea');
     console.log('3. Listar tareas');
-    console.log(`4. Salir`);
+    console.log(`4. Completar tarea`);
+    console.log(`5. Listar Pendientes`);
+    console.log(`6. Listas Completados`);
+    console.log(`7. Salir`);
         
     const rl = readline.createInterface({ input, output });
     opcionTexto = await rl.question("* Opcion: ");
@@ -71,7 +106,24 @@ do
             break;
         
         case 4:
+            // Completar tarea
+            let idCompletado : string = await rl.question("Escribe el id de la tarea completada: ");
+            completarTarea(parseInt(idCompletado, 10));
+            break;
+        
+        case 5:
+            // Listar Pendientes
+            listaPendientes();
+            break;
+            
+            case 6:
+            // Listar Completadas
+            listaCompletados();
+            break;
+        
+        case 7:
             // Salir: termina el ciclo
+            console.log("HASTA LA  PROXIMA");
             break;
         
         default:
@@ -80,7 +132,7 @@ do
 
     rl.close();
 }
-while ( opcion != 4)
+while ( opcion != 7)
 
 
 
