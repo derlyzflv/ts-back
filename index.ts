@@ -48,17 +48,33 @@ const listTasks = () => {
     // }
     imprimirTareas(tareas);
 }
+/* Actualmente removeTask solo puede eliminar la última tarea del arreglo. ¿Qué pasaría si el usuario quisiera eliminar una tarea específica?
 
-const removeTask = () => {
-    const tareaEliminada = tareas.pop()!;
-    console.log("Tarea eliminada: ", tareaEliminada.title);
+Objetivo: Mejora la función para que reciba un id como parámetro y elimine la tarea correspondiente sin importar su posición en el arreglo. Actualiza también la opción del menú para que solicite el id al usuario.
+
+No hay una única forma correcta de resolverlo — explora, experimenta y elige la que más sentido te haga. Algunas pistas de métodos que podrían servirte:
+
+.findIndex() + .splice()
+.filter()
+.forEach() con lógica propia
+Haz un commit con tu solución cuando termines: */
+
+const removeTask = (id: number) => {
+    const tareaEliminada: number = tareas.findIndex((t: Task) => t.id === id);
+    if (tareaEliminada !== -1) {
+        const tareaTitulo: Task = tareas.find((t: Task) => t.id === id)!;
+        tareas.splice(tareaEliminada, 1);
+        console.log("Tarea eliminada: ", tareaTitulo.title);
+    } else {
+        console.log("ERROR: Tarea no encontrada");
+    }
 }
 
 const completarTarea = (id: number) => {
     const tareaCompletada: Task | undefined = tareas.find((t: Task) => t.id === id);
     if (tareaCompletada !== undefined) {
-        tareas[id - 1].completed = true;
-        console.log(tareas[id - 1]);
+        tareaCompletada.completed = true;
+        console.log(tareaCompletada);
     } else {
         console.log("ERROR: Tarea no encontrada");
     }
@@ -100,9 +116,9 @@ const saveToDB = (tarea: Task): Promise<void> => {
 }
 
 const tareas: Task[] = [];
-// await addTask("Requisitos Funcionales");
-// await addTask("Prototipo Home");
-// await addTask("Interfaz Home");
+await addTask("Prototipo Home");
+await addTask("Requisitos Funcionales");
+await addTask("Interfaz Home");
 let opcionTexto: string;
 let tareaTexto: string;
 let opcion: number;
@@ -113,7 +129,7 @@ do {
     console.log("Seleccione una opcion: ");
 
     console.log('1. Agregar tarea');
-    console.log('2. Eliminar última tarea');
+    console.log('2. Eliminar tarea');
     console.log('3. Listar tareas');
     console.log(`4. Completar tarea`);
     console.log(`5. Listar Pendientes`);
@@ -134,7 +150,8 @@ do {
 
         case 2:
             //Eliminar última tarea: elimina el último elemento del arreglo con .pop() e imprime el título eliminado
-            removeTask();
+            let idEliminado: string = await rl.question("Escribe el id de la tarea a eliminar: ");
+            removeTask(parseInt(idEliminado, 10));
             break;
 
         case 3:
